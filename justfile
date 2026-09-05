@@ -5,6 +5,20 @@ paths:
 test:
     openscad -o /dev/null --export-format=stl test.scad
 
+# Build the single-file model for MakerWorld's Parametric Model Maker
+makerworld: paths
+    uv run makerworld/build.py
+
+# Build the MakerWorld model and check that its plates render
+test-makerworld: makerworld
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for entry in mw_assembly_view mw_plate_1; do
+        cp build/makerworld/GridFlock.scad build/makerworld/render-test.scad
+        echo "$entry();" >> build/makerworld/render-test.scad
+        openscad -o /dev/null --export-format=stl --hardwarnings build/makerworld/render-test.scad
+    done
+
 clean-docs:
     # docs task will delete any images it didn't write
     mkdir -p docs/images
@@ -109,4 +123,4 @@ printables-zip: clean-printables-zip paths (intersection-fit-tester-one "0.0") (
     rm -f build/printables.zip
     cd build/printables && zip -r ../printables.zip .
 
-all: paths test showcase docs printables-zip banners
+all: paths test makerworld test-makerworld showcase docs printables-zip banners
