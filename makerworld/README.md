@@ -29,7 +29,7 @@ Four options replace gridflock's own; everything else is exposed as declared. [`
 | `Width`, `Depth`, `Clearance` | `plate_size` |
 | `Build_Plate`, `Build_Plate_Custom`, `Plate_Margin` | `bed_size` |
 | `Connector_Style` | `connector_intersection_puzzle`, `connector_edge_puzzle` |
-| `Edge_Style`, `Edge_Position` | `filler_x`/`filler_y`, `filler_fraction`, `filler_minimum_size`, `filler_solid`, `alignment` |
+| `Edge_Style`, `Edge_Position` | `filler_x`/`filler_y`, `filler_fraction`, `filler_minimum_size`, `alignment` |
 | `Click_Latch`, `Lightweight` | `click`, `lightweight` |
 
 ## How the layout is defined

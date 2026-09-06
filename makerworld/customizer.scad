@@ -211,7 +211,6 @@ Stacked_Separator_Color = "#00A0A0"; // color
 @drop click
 // Replaced by Edge_Style and Edge_Position above.
 @drop filler_x filler_y filler_fraction filler_minimum_size alignment
-@drop? filler_solid
 // Debugging aid, not useful in a customizer.
 @drop test_pattern
 // openGrid adapters import() 3mf files; MakerWorld only allows a model's own uploaded defaults, so use the web generator instead.

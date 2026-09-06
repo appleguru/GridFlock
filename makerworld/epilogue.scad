@@ -51,7 +51,6 @@ filler_fraction = [2, 2];
 // As small as gridfinity can cut, so a leftover becomes its own cell rather than being merged into
 // the previous one, which would make that cell wider than a 42mm grid unit.
 filler_minimum_size = [_MW_MIN_FILLER, _MW_MIN_FILLER];
-filler_solid = false;
 
 // Padding all goes east/north, so the grid itself sits in the west/south corner.
 alignment = Edge_Position == 0 ? [0.5, 0.5] : [0, 0];
