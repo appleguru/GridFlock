@@ -22,7 +22,7 @@ Lightweight = true;
 // Grip bins without magnets. Use PETG
 Click_Latch = false;
 // What fills the leftover space
-Edge_Style = 1; // [0:Solid, 1:Open]
+Edge_Style = 1; // [0:Solid, 1:Open, 2:Nothing (Full units only)]
 
 /* [Custom Build Plate] */
 

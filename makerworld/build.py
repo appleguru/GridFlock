@@ -20,6 +20,7 @@ DECL_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)(\s*=\s*)(.*?)(;\s*)(//.*)?$")
 MW_PLATE_COUNT = 24
 MW_PART_GAP = 2
 MW_BED_MARGIN = 2
+MW_GRID = 42  # mirrors gridfinity's BASEPLATE_DIMENSIONS, asserted in main()
 MW_MIN_FILLER = 8.5  # gridfinity's cutter asserts a cell is wider than BASEPLATE_OUTER_DIAMETER (8)
 
 HEADER = """/**
@@ -213,6 +214,7 @@ def multi_plate(body):
          "    assert(is_undef(mw_plate) || stacked_print || max([for (p = mw_placement) p[0]]) < _MW_PLATE_COUNT,\n"
          '        "This plate needs more build plates than MakerWorld can show. '
          'Pick a larger printer, or a smaller plate.");\n'
+         "    assert(BASEPLATE_DIMENSIONS == [_MW_GRID, _MW_GRID], \"makerworld/build.py has the wrong grid size.\");\n"
          "    function mw_flip(i) = [\n"
          "        stacked_print && (i == 0 ? stacked_print_flip_first : stacked_print_flip) == _FLIP_X,\n"
          "        stacked_print && (i == 0 ? stacked_print_flip_first : stacked_print_flip) == _FLIP_Y\n"
@@ -303,7 +305,7 @@ def main():
     out += ["", "/* [Hidden] */", ""]
     # Ahead of the epilogue: a top-level assignment can only see names defined before it.
     out += [f"_MW_PLATE_COUNT = {MW_PLATE_COUNT};", f"_MW_PART_GAP = {MW_PART_GAP};",
-            f"_MW_BED_MARGIN = {MW_BED_MARGIN};", f"_MW_MIN_FILLER = {MW_MIN_FILLER};", ""]
+            f"_MW_BED_MARGIN = {MW_BED_MARGIN};", f"_MW_MIN_FILLER = {MW_MIN_FILLER};", f"_MW_GRID = {MW_GRID};", ""]
     out += ["// Map the capitalized customizer labels back onto gridflock's own variable names."]
     out += aliases + [""]
     out += ["// ---- begin makerworld/epilogue.scad ----"]

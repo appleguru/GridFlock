@@ -20,7 +20,11 @@ assert(Width > 42 && Depth > 42, "The plate has to be big enough for at least on
 assert(Clearance >= 0, "Clearance may not be negative.");
 
 // The clearance is taken off every side, so it comes off each dimension twice.
-plate_size = [Width - Clearance*2, Depth - Clearance*2];
+_mw_space = [Width - Clearance*2, Depth - Clearance*2];
+// 'Nothing' rounds down to whole cells, so there is no leftover to fill or pad in the first place.
+plate_size = Edge_Style == 2
+    ? [floor(_mw_space.x / _MW_GRID) * _MW_GRID, floor(_mw_space.y / _MW_GRID) * _MW_GRID]
+    : _mw_space;
 bed_size = Build_Plate == 0 ? Build_Plate_Custom : _BUILD_PLATES[Build_Plate];
 
 connector_intersection_puzzle = Connector_Style == 1;
@@ -30,7 +34,7 @@ click = Click_Latch;
 // A skeletonized plate has no material left to hold any of these, so they win over Lightweight.
 lightweight = Lightweight && !Click_Latch && !magnets && solid_base == 0;
 
-// An open edge is one dynamic filler cell of exactly the leftover width; a solid edge is plain padding.
+// An open edge is one dynamic filler cell of exactly the leftover width; the others leave no leftover.
 filler_x = Edge_Style == 1 ? 2 : 0;
 filler_y = Edge_Style == 1 ? 2 : 0;
 filler_fraction = [2, 2];

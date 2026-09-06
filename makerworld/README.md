@@ -17,7 +17,7 @@ Always visible: **Width**, **Depth**, **Clearance**, **Build Plate**, **Lightwei
 
 - **Width**, **Depth** - inner size of the space the plate has to fit, in mm.
 - **Clearance** - taken off all four sides. `Width 312, Clearance 2` gives a 308mm plate.
-- **Edge Style** - what happens to the space left over after whole 42mm cells. `Open` puts it in one narrow cell that still holds a bin, `Solid` leaves plain plate.
+- **Edge Style** - what happens to the space left over after whole 42mm cells. `Open` puts it in one narrow cell that still holds a bin, `Solid` leaves plain plate, `Nothing` rounds the plate down instead.
 - **Edge Position** - centres a solid edge, or pushes the grid into the south-west corner. An open edge cell always sits at the far side, so this does not apply to it.
 - **Click Latch** - magnet-free bin grip, Arc style by default. ClickGroove is under the Click Latch tab.
 - **Lightweight** - on by default, and ignored when magnets, a solid base or the latch are on, since those need the material it would remove.
