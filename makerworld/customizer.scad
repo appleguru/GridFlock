@@ -24,10 +24,12 @@ Click_Latch = false;
 // What fills the leftover space
 Edge_Style = 1; // [0:Solid, 1:Open, 2:Nothing (Full units only)]
 
-/* [Custom Build Plate] */
+/* [Build Plate] */
 
 // Bed size, mm. For Custom only
 Build_Plate_Custom = [250, 220];
+// Keep this much of every bed edge clear, mm
+Plate_Margin = 0; // 0.5
 
 /* [Connectors] */
 

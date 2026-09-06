@@ -18,6 +18,7 @@ _BUILD_PLATES = [
 
 assert(Width > 42 && Depth > 42, "The plate has to be big enough for at least one 42mm cell.");
 assert(Clearance >= 0, "Clearance may not be negative.");
+assert(Plate_Margin >= 0, "Plate Margin may not be negative.");
 
 // The clearance is taken off every side, so it comes off each dimension twice.
 _mw_space = [Width - Clearance*2, Depth - Clearance*2];
@@ -25,7 +26,11 @@ _mw_space = [Width - Clearance*2, Depth - Clearance*2];
 plate_size = Edge_Style == 2
     ? [floor(_mw_space.x / _MW_GRID) * _MW_GRID, floor(_mw_space.y / _MW_GRID) * _MW_GRID]
     : _mw_space;
-bed_size = Build_Plate == 0 ? Build_Plate_Custom : _BUILD_PLATES[Build_Plate];
+// Keeping clear of the bed edge covers both the prime line and cutter keep-outs and the poor
+// adhesion right at the edge. It shrinks the bed for splitting and for packing alike.
+bed_size = (Build_Plate == 0 ? Build_Plate_Custom : _BUILD_PLATES[Build_Plate]) - [Plate_Margin, Plate_Margin] * 2;
+
+assert(bed_size.x > 42 && bed_size.y > 42, "Plate Margin leaves too little of the bed to fit a cell.");
 
 connector_intersection_puzzle = Connector_Style == 1;
 connector_edge_puzzle = Connector_Style == 2;

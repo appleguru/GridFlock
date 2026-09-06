@@ -13,7 +13,7 @@ Upload `build/makerworld/GridFlock.scad` to the Parametric Model Maker.
 
 ## Options
 
-Always visible: **Width**, **Depth**, **Clearance**, **Build Plate**, **Lightweight**, **Click Latch**, **Edge Style**. The rest sit in tabs: Custom Build Plate, Connectors, Edges, Lightweight, Magnets, Numbering, Plate Wall, Screws, Click Latch, Advanced.
+Always visible: **Width**, **Depth**, **Clearance**, **Build Plate**, **Lightweight**, **Click Latch**, **Edge Style**. The rest sit in tabs: Build Plate, Connectors, Edges, Lightweight, Magnets, Numbering, Plate Wall, Screws, Click Latch, Advanced.
 
 - **Width**, **Depth** - inner size of the space the plate has to fit, in mm.
 - **Clearance** - taken off all four sides. `Width 312, Clearance 2` gives a 308mm plate.
@@ -27,7 +27,7 @@ Four options replace gridflock's own; everything else is exposed as declared. [`
 | MakerWorld | GridFlock |
 | --- | --- |
 | `Width`, `Depth`, `Clearance` | `plate_size` |
-| `Build_Plate`, `Build_Plate_Custom` | `bed_size` |
+| `Build_Plate`, `Build_Plate_Custom`, `Plate_Margin` | `bed_size` |
 | `Connector_Style` | `connector_intersection_puzzle`, `connector_edge_puzzle` |
 | `Edge_Style`, `Edge_Position` | `filler_x`/`filler_y`, `filler_fraction`, `filler_minimum_size`, `filler_solid`, `alignment` |
 | `Click_Latch`, `Lightweight` | `click`, `lightweight` |
@@ -56,6 +56,7 @@ Worth knowing when editing it:
 - First-fit-decreasing shelf packing, pieces rotated upright: two plates for the 312x277 default on a 256x256 bed, eleven for 600x400 on an A1 mini.
 - PMM discards empty plates, so the count follows the options.
 - Footprints include twice the connector margin; parts sit 2mm apart and 2mm clear of the bed edge.
+- **Plate Margin** shrinks the bed before both splitting and packing, keeping parts away from the prime line, the cutter and the poorly adhering edge. It defaults to 0, because raising it often costs an extra plate without changing how the plate is split.
 - `mw_plate_1` to `mw_plate_24`. Needing more fails the render rather than dropping pieces.
 - `mw_assembly_view()` previews the assembled plate and is not exported.
 - Stacked printing skips packing and stays on one plate.
