@@ -210,7 +210,7 @@ def multi_plate(body):
          "    duplicates = stacked_print ? stacked_print_duplicates : 1;\n"
          "    mw_placement = stacked_print ? [] : mw_pack(\n"
          "        [for (segi = segments_in_order) compute_segment_size(segi) + [connector_margin, connector_margin] * 2],\n"
-         "        bed_size - [_MW_BED_MARGIN, _MW_BED_MARGIN] * 2, _MW_PART_GAP);\n"
+         "        bed_size - [_MW_BED_MARGIN, _MW_BED_MARGIN] * 2, _MW_PART_GAP, _mw_keepout);\n"
          "    assert(is_undef(mw_plate) || stacked_print || max([for (p = mw_placement) p[0]]) < _MW_PLATE_COUNT,\n"
          '        "This plate needs more build plates than MakerWorld can show. '
          'Pick a larger printer, or a smaller plate.");\n'

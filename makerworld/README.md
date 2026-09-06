@@ -57,6 +57,8 @@ Worth knowing when editing it:
 - PMM discards empty plates, so the count follows the options.
 - Footprints include twice the connector margin; parts sit 2mm apart and 2mm clear of the bed edge.
 - The long side of the plate is always put on x, because gridflock splits x into evenly sized segments but lets y run to the full bed. Splitting the same plate the other way up produces a piece six cells long where five would do. The preview is turned back to the orientation asked for.
+- Each preset gives up whatever its prime and purge lines sweep across the front. The Bambu figures are read out of BambuStudio: `printable_area`, `bed_exclude_area` and the start gcode template. The X1C and P1S purge up to y=12, the A1 only to y=1, and the A1 mini, H2D and H2S purge off the front of the bed and lose nothing. 12mm is the fallback wherever the purge geometry could not be read, covering the P2S, A2L and every non-Bambu preset. A custom bed size is taken at face value, for anyone who moves or disables those.
+- Plates are nudged clear of the cutter's corner where the printer has one: 18x28mm at the front left on the P1P, P1S, X1C and X1E. The A1, A1 mini, P2S, H2D and H2S have no exclusion and get the full bed. Nudging the finished plate rather than reserving the corner while packing keeps it from costing an extra plate.
 - **Plate Margin** shrinks the bed before both splitting and packing, keeping parts away from the prime line, the cutter and the poorly adhering edge. It defaults to 0, because raising it often costs an extra plate without changing how the plate is split.
 - `mw_plate_1` to `mw_plate_24`. Needing more fails the render rather than dropping pieces.
 - `mw_assembly_view()` previews the assembled plate and is not exported.

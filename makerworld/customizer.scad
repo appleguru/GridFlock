@@ -15,8 +15,8 @@ Width = 312;
 Depth = 277;
 // Some wiggle room so plate fits. 2mm recommended
 Clearance = 2; // 0.1
-// Size of the build plate on your printer
-Build_Plate = 2; // [0:Custom, 1:Bambu Lab A1 mini (180x180), 2:Bambu Lab A1 / P1 / X1 (256x256), 3:Bambu Lab H2D (300x320), 4:Bambu Lab H2S (340x340), 5:Prusa MK4 / Core One (250x220), 6:Prusa Core One L (300x330), 7:Prusa MINI+ (180x180), 8:Creality Ender 3 / K1 (220x220), 9:Creality K2 (260x260), 10:Elegoo Centauri Carbon (256x256), 11:Elegoo Neptune 4 Plus (320x320)]
+// Usable size of the build plate on your printer
+Build_Plate = 3; // [0:Custom, 1:Bambu Lab A1 mini (180x180), 2:Bambu Lab A1 (256x254), 3:Bambu Lab P1P / P1S / X1C / X1E (256x244), 4:Bambu Lab P2S (256x244), 5:Bambu Lab A2L (330x308), 6:Bambu Lab H2D (350x320), 7:Bambu Lab H2S (340x320), 8:Prusa MK4 / Core One (250x208), 9:Prusa Core One L (300x318), 10:Prusa MINI+ (180x168), 11:Creality Ender 3 / K1 (220x208), 12:Creality K2 (260x248), 13:Elegoo Centauri Carbon (256x244), 14:Elegoo Neptune 4 Plus (320x308)]
 // Thin walls, half the filament. Ignored when magnets or Latch are on
 Lightweight = true;
 // Grip bins without magnets. Use PETG
