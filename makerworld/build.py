@@ -271,7 +271,8 @@ def multi_plate(body):
 def plate_modules():
     """PMM renders each mw_plate_N() on its own build plate and discards the empty ones."""
     out = [f"module mw_plate_{n}() {{ main(mw_plate = {n - 1}); }}" for n in range(1, MW_PLATE_COUNT + 1)]
-    out += ["", "module mw_assembly_view() { main(); }"]
+    # Turn the preview back to the orientation the user asked for; the plates themselves do not care.
+    out += ["", "module mw_assembly_view() { rotate([0, 0, _mw_turned ? 90 : 0]) main(); }"]
     return out
 
 

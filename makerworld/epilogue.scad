@@ -21,7 +21,12 @@ assert(Clearance >= 0, "Clearance may not be negative.");
 assert(Plate_Margin >= 0, "Plate Margin may not be negative.");
 
 // The clearance is taken off every side, so it comes off each dimension twice.
-_mw_space = [Width - Clearance*2, Depth - Clearance*2];
+_mw_asked = [Width - Clearance*2, Depth - Clearance*2];
+// gridflock splits x into evenly sized segments but lets y run to the full bed, so the same plate
+// cuts into smaller pieces with its long side on x. The result is that rectangle turned a quarter
+// turn, which fits the same space.
+_mw_turned = _mw_asked.x < _mw_asked.y;
+_mw_space = _mw_turned ? [_mw_asked.y, _mw_asked.x] : _mw_asked;
 // 'Nothing' rounds down to whole cells, so there is no leftover to fill or pad in the first place.
 plate_size = Edge_Style == 2
     ? [floor(_mw_space.x / _MW_GRID) * _MW_GRID, floor(_mw_space.y / _MW_GRID) * _MW_GRID]

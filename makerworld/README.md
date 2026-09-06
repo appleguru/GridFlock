@@ -56,6 +56,7 @@ Worth knowing when editing it:
 - First-fit-decreasing shelf packing, pieces rotated upright: two plates for the 312x277 default on a 256x256 bed, eleven for 600x400 on an A1 mini.
 - PMM discards empty plates, so the count follows the options.
 - Footprints include twice the connector margin; parts sit 2mm apart and 2mm clear of the bed edge.
+- The long side of the plate is always put on x, because gridflock splits x into evenly sized segments but lets y run to the full bed. Splitting the same plate the other way up produces a piece six cells long where five would do. The preview is turned back to the orientation asked for.
 - **Plate Margin** shrinks the bed before both splitting and packing, keeping parts away from the prime line, the cutter and the poorly adhering edge. It defaults to 0, because raising it often costs an extra plate without changing how the plate is split.
 - `mw_plate_1` to `mw_plate_24`. Needing more fails the render rather than dropping pieces.
 - `mw_assembly_view()` previews the assembled plate and is not exported.
