@@ -45,6 +45,8 @@ Edge_Position = 0; // [0:Centered, 1:One side]
 
 // Horizontal wall thickness, mm
 @include? lightweight_wall
+// Anchor around connectors
+@include? lightweight_connector_fill
 // Drop the 0.7mm lip, no overhang
 @include? remove_bottom_lip
 

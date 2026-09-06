@@ -138,6 +138,8 @@ help-link = "https://github.com/yawkat/GridFlock/blob/main/README.md#lightweight
 display-condition = {fixed = false}
 [model.param-metadata.lightweight_wall]
 help-link = "https://github.com/yawkat/GridFlock/blob/main/README.md#wall-thickness"
+[model.param-metadata.lightweight_connector_fill]
+help-link = "https://github.com/yawkat/GridFlock/blob/main/README.md#connector-fill"
 [model.param-metadata.remove_bottom_lip]
 help-link = "https://github.com/yawkat/GridFlock/blob/main/README.md#bottom-lip"
 display-condition = {js = "!lightweight"}

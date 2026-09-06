@@ -58,6 +58,7 @@ For inserting magnets, check out [the jig](#jig).
     - [Dynamic](#dynamic)
   - [Lightweight](#lightweight)
     - [Wall thickness](#wall-thickness)
+    - [Connector fill](#connector-fill)
     - [Bottom lip](#bottom-lip)
   - [Corner radius](#corner-radius)
   - [Alignment](#alignment)
@@ -478,6 +479,10 @@ The same plate without `lightweight`, also seen from below:
 <img src="docs/images/lightweight-off.png" alt="Standard baseplate, seen from below" />
 
 The top surface, the outer wall of each segment and the puzzle connectors stay solid, so segments link up the same way and the plate looks unchanged from above.
+
+### Connector fill
+
+`lightweight_connector_fill` keeps that much solid material around every connector, male and female. Without it a connector grows out of a single wall with a hollow channel behind it, and the female socket cuts clean through that wall. Set it to 0 if your segments are glued rather than clipped.
 
 > [!NOTE]
 > Lightweight mode is incompatible with magnets, `solid_base` and the click latch — there is no material left to hold them, and GridFlock refuses to render that combination.
