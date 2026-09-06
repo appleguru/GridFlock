@@ -34,7 +34,9 @@ lightweight = Lightweight && !Click_Latch && !magnets && solid_base == 0;
 filler_x = Edge_Style == 1 ? 2 : 0;
 filler_y = Edge_Style == 1 ? 2 : 0;
 filler_fraction = [2, 2];
-filler_minimum_size = [15, 15];
+// As small as gridfinity can cut, so a leftover becomes its own cell rather than being merged into
+// the previous one, which would make that cell wider than a 42mm grid unit.
+filler_minimum_size = [_MW_MIN_FILLER, _MW_MIN_FILLER];
 filler_solid = false;
 
 // Padding all goes east/north, so the grid itself sits in the west/south corner.

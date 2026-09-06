@@ -20,6 +20,7 @@ DECL_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)(\s*=\s*)(.*?)(;\s*)(//.*)?$")
 MW_PLATE_COUNT = 24
 MW_PART_GAP = 2
 MW_BED_MARGIN = 2
+MW_MIN_FILLER = 8.5  # gridfinity's cutter asserts a cell is wider than BASEPLATE_OUTER_DIAMETER (8)
 
 HEADER = """/**
  * GridFlock - a Gridfinity baseplate generator for small printer beds.
@@ -267,8 +268,7 @@ def multi_plate(body):
 
 def plate_modules():
     """PMM renders each mw_plate_N() on its own build plate and discards the empty ones."""
-    out = [f"_MW_PLATE_COUNT = {MW_PLATE_COUNT};", f"_MW_PART_GAP = {MW_PART_GAP};", f"_MW_BED_MARGIN = {MW_BED_MARGIN};", ""]
-    out += [f"module mw_plate_{n}() {{ main(mw_plate = {n - 1}); }}" for n in range(1, MW_PLATE_COUNT + 1)]
+    out = [f"module mw_plate_{n}() {{ main(mw_plate = {n - 1}); }}" for n in range(1, MW_PLATE_COUNT + 1)]
     out += ["", "module mw_assembly_view() { main(); }"]
     return out
 
@@ -301,6 +301,9 @@ def main():
     out += spec
     # Everything below is implementation detail hidden from the customizer.
     out += ["", "/* [Hidden] */", ""]
+    # Ahead of the epilogue: a top-level assignment can only see names defined before it.
+    out += [f"_MW_PLATE_COUNT = {MW_PLATE_COUNT};", f"_MW_PART_GAP = {MW_PART_GAP};",
+            f"_MW_BED_MARGIN = {MW_BED_MARGIN};", f"_MW_MIN_FILLER = {MW_MIN_FILLER};", ""]
     out += ["// Map the capitalized customizer labels back onto gridflock's own variable names."]
     out += aliases + [""]
     out += ["// ---- begin makerworld/epilogue.scad ----"]
