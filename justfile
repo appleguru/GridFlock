@@ -76,6 +76,30 @@ docs:
 
     asyncio.run(main())
 
+# Render the images referenced by the MakerWorld listing text
+makerworld-docs:
+    #!/usr/bin/env -S uv run --script
+    import re, shlex, subprocess, os
+    pattern = re.compile(r"^\s*<!--\s*openscad (.+?)\s*-->\s*$")
+    os.makedirs("makerworld/images", exist_ok=True)
+    written = []
+    for line in open("makerworld/listing.html"):
+        match = pattern.match(line)
+        if not match:
+            continue
+        args = shlex.split(match.group(1))
+        size = [] if any(a.startswith("--imgsize") for a in args) else ["--imgsize=1600,900"]
+        cmd = ["openscad", "--hardwarnings", "--projection=ortho", "--colorscheme=Starnight",
+               "--render", *size, *args]
+        if not any(".scad" in c for c in cmd):
+            cmd.append("gridflock.scad")
+        print("Running: " + shlex.join(cmd))
+        subprocess.run(cmd, check=True)
+        written.append(cmd[cmd.index("-o") + 1])
+    for f in os.listdir("makerworld/images"):
+        if os.path.join("makerworld/images", f) not in written:
+            os.unlink(os.path.join("makerworld/images", f))
+
 overlay-png name:
     inkscape -w 1600 -h 1200 docs/{{name}}.svg -o build/{{name}}.png
 

@@ -1,0 +1,76 @@
+<!-- Description for the MakerWorld model page: paste the HTML below into the description field.
+     Run `just makerworld-docs` to re-render the images. -->
+
+<p>One generator with everything you want from a Gridfinity baseplate:</p>
+
+<ul>
+<li><strong>Filament optimized.</strong> Thin-wall plates use about half the material and less print time.</li>
+<li><strong>Puzzle-piece interlocking.</strong> A drawer-sized plate splits into pieces that fit your printer and clip back together into one rigid plate.</li>
+<li><strong>Bins that stay put.</strong> Options for a magnet-free click latch, or magnets if you prefer them.</li>
+<li><strong>Fully open source.</strong> MIT and CC-BY, generated from OpenSCAD you can read and change.</li>
+</ul>
+
+<p>Type in the size of your drawer or space and it does the rest.</p>
+
+<!-- openscad -o makerworld/images/segments.png --camera=0,0,0,55,0,25,520 -D plate_size='[210,168]' -D bed_size='[110,110]' -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/segments.png" width="800" alt="The same plate split into pieces that fit a smaller printer" /></p>
+
+<p>The pieces clip together with puzzle connectors at the cell corners, so the finished plate behaves as one piece.</p>
+
+<!-- Also used as the listing cover image. -->
+<!-- openscad -o makerworld/images/connector.png --imgsize=1200,1200 --camera=0,0,0,55,0,25,70 -D plate_size='[168,84]' -D bed_size='[90,90]' -D numbering=false -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/connector.png" width="600" alt="Close-up of a puzzle connector joining two pieces" /></p>
+
+<h2>What this remix adds</h2>
+
+<p>Built on <a href="https://github.com/yawkat/GridFlock">GridFlock</a> by Jonas Konrad, which does the grid, the splitting and the puzzle connectors. This version adds:</p>
+
+<ul>
+<li><strong>Lightweight plates.</strong> The thin-wall mode above. The original prints solid.</li>
+<li><strong>A choice of edge treatment.</strong> The leftover strip can be an open part-cell, a flat solid border, or nothing at all.</li>
+<li><strong>Built for the Parametric Model Maker.</strong> The generator is flattened into the single file PMM accepts, the ~90 options are cut down to the handful below, and the pieces arrive spread across as many build plates as they need rather than failing to fit on one.</li>
+<li><strong>Experimental stacked printing</strong>, with a peel-away layer of a second filament between the pieces.</li>
+</ul>
+
+<h2>The options</h2>
+
+<p><strong>Width</strong> and <strong>Depth</strong> are the inside of the space you are filling, in millimetres. Measure the drawer or space you want to fill and put those values in</p>
+
+<p><strong>Clearance</strong> is how much smaller than your width and depth the plate is printed, on every side. 2mm is a good starting point and stops the plate binding as you slide it in.</p>
+
+<p><strong>Build Plate</strong> is your printer. GridFlock splits the grid into pieces that fit it and hands you as many plates as it needs. Choose Custom to type a bed size in by hand.</p>
+
+<p><strong>Edge Style</strong> decides what happens to the leftover strip, because a drawer is rarely an exact multiple of 42mm.</p>
+
+<ul>
+<li><strong>Open</strong> &mdash; Narrower open cells along the edges.</li>
+<li><strong>Solid</strong> &mdash; a flat, closed border.</li>
+<li><strong>Nothing</strong> &mdash; no leftover at all: the plate is rounded down to whole cells.</li>
+</ul>
+
+<!-- openscad -o makerworld/images/edge-open.png --camera=0,0,0,0,0,0,420 -D plate_size='[150,110]' -D filler_x=2 -D filler_y=2 -D numbering=false -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/edge-open.png" width="800" alt="Open edge" /></p>
+<!-- openscad -o makerworld/images/edge-solid.png --camera=0,0,0,0,0,0,420 -D plate_size='[150,110]' -D filler_x=0 -D filler_y=0 -D numbering=false -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/edge-solid.png" width="800" alt="Solid edge" /></p>
+<!-- openscad -o makerworld/images/edge-nothing.png --camera=0,0,0,0,0,0,420 -D plate_size='[126,84]' -D filler_x=0 -D filler_y=0 -D numbering=false -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/edge-nothing.png" width="800" alt="No edge filling" /></p>
+
+<p><strong>Lightweight</strong> prints thin walls instead of solid material between the cells, using about half the filament and less printing time. From above the plate looks the same; the difference is underneath. It is on by default.</p>
+
+<!-- openscad -o makerworld/images/lightweight.png --camera=0,0,0,150,0,25,300 -D plate_size='[126,84]' -D lightweight=true -D numbering=false -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/lightweight.png" width="800" alt="A lightweight plate seen from below" /></p>
+
+<p><strong>Click Latch</strong> grips the bottom of each bin so they stay put when you pull a tool out, with no magnets to buy or glue in. Print it in PETG: the latch is under constant load and PLA creeps out of shape over time. Turning this on switches Lightweight off, because the latch needs material to sit in.</p>
+
+<!-- openscad -o makerworld/images/click-latch.png --camera=0,0,0,55,0,25,300 -D plate_size='[84,84]' -D click=true -D lightweight=false -D numbering=false -->
+<p align="center"><img src="https://raw.githubusercontent.com/appleguru/GridFlock/makerworld/makerworld/images/click-latch.png" width="800" alt="A plate with the click latch" /></p>
+
+<h2>Experimental</h2>
+
+<p>Two options under Advanced are still being tried out. <strong>Stacked Print</strong> prints the pieces stacked on top of each other in a single job, and <strong>Stacked Separator</strong> puts a layer of a second filament between them so they peel apart afterwards. Use PETG between PLA parts, or PLA between PETG ones. You'll need to specify the filament types and raise the purge volumes in your slicer for this to work.</p>
+
+<h2>Version history</h2>
+
+<ul>
+<li><strong>2026-09-06</strong> &mdash; Initial release.</li>
+</ul>
