@@ -106,10 +106,10 @@ alignment = [0.5, 0.5]; // [0:0.1:1]
 /* [Lightweight] */
 
 // Skeletonize the baseplate: instead of solid material between the cells, only a thin wall following the gridfinity profile is printed. This roughly halves filament use and print time. Incompatible with magnets, a solid base and the click latch
-lightweight = false;
-// Wall thickness in lightweight mode. This is a horizontal thickness, which is what the slicer sees on each layer, so a value matching your nozzle diameter prints as a single wall
-lightweight_wall = 0.8; // 0.05
-// Remove the bottom lip of the gridfinity profile, extending the vertical section of the profile straight down instead. The lip is not functionally required; removing it saves filament, removes the overhang between neighbouring cells, and widens the first layer. Always enabled in lightweight mode
+hollow = false;
+// Wall thickness in hollow mode. This is a horizontal thickness, which is what the slicer sees on each layer, so a value matching your nozzle diameter prints as a single wall
+hollow_wall = 0.8; // 0.05
+// Remove the bottom lip of the gridfinity profile, extending the vertical section of the profile straight down instead. The lip is not functionally required; removing it saves filament, removes the overhang between neighbouring cells, and widens the first layer. Always enabled in hollow mode
 remove_bottom_lip = false;
 
 /* [Numbering] */
@@ -265,9 +265,9 @@ assert(!magnets || magnet_frame_style != _MAGNET_SOLID || magnet_style != _MAGNE
 
 assert(!thumbscrews || solid_base > 0 || (magnets && magnet_frame_style == _MAGNET_SOLID), "Thumbscrew holes require some sort of solid base, such as magnet_style solid, or an explicit solid_base.");
 
-assert(!lightweight || (!magnets && solid_base == 0 && !click), "Lightweight mode only leaves a thin wall around the gridfinity profile, so there is nothing left to hold magnets, a solid base or a click latch.");
+assert(!hollow || (!magnets && solid_base == 0 && !click), "Hollow mode only leaves a thin wall around the gridfinity profile, so there is nothing left to hold magnets, a solid base or a click latch.");
 
-assert(lightweight_wall > 0, "lightweight_wall must be positive.");
+assert(hollow_wall > 0, "hollow_wall must be positive.");
 
 _OPENGRID_LITE = 1;
 _OPENGRID_DIRECTIONAL = 2;
@@ -289,8 +289,8 @@ _magnet_extraction_dim_negative = [magnet_release_width, magnet_diameter/2];
 _profile_height_raw = 4.65;
 // for stacked prints, we cut off a sliver at the top to get a better contact area
 _profile_height = _profile_height_raw - top_slice - (stacked_print ? stacked_print_slice : 0);
-// The lip slopes inward, so in lightweight mode it would taper the horizontally measured shell to nothing
-_remove_bottom_lip = remove_bottom_lip || lightweight;
+// The lip slopes inward, so in hollow mode it would taper the horizontally measured shell to nothing
+_remove_bottom_lip = remove_bottom_lip || hollow;
 // Horizontal distance from the sweep path to the vertical (waist) section of the gridfinity profile
 _profile_waist_offset = BASEPLATE_INNER_RADIUS + _BASEPLATE_PROFILE[1].x;
 // Height of the bottom lip of the gridfinity profile
@@ -403,14 +403,14 @@ module cutter(size, below=0) {
 }
 
 /**
- * @Summary The interior volume of a cell that lightweight mode removes, leaving a lightweight_wall shell
+ * @Summary The interior volume of a cell that hollow mode removes, leaving a hollow_wall shell
  * @param unit_size Size of the cell, in grid units, in each direction
  */
 module cell_core(unit_size=[1, 1]) {
     size = [BASEPLATE_DIMENSIONS.x*unit_size.x, BASEPLATE_DIMENSIONS.y*unit_size.y];
     difference() {
         translate([-size.x/2, -size.y/2, -0.001]) cube([size.x, size.y, _total_height + 0.002]);
-        cutter([size.x + lightweight_wall*2, size.y + lightweight_wall*2]);
+        cutter([size.x + hollow_wall*2, size.y + hollow_wall*2]);
     }
 }
 
@@ -1078,7 +1078,7 @@ module segment_core(trace, size, padding, connector, global_cell_index, global_c
     last = [len(trace.x)-1, len(trace.y)-1];
     intersection() {
         translate([0, 0, -_extra_height]) linear_extrude(height = _total_height)
-            offset(-lightweight_wall) segment_rectangle(size, connector, include_wall=false);
+            offset(-hollow_wall) segment_rectangle(size, connector, include_wall=false);
         union() {
             for (ix = [0:1:last.x]) for (iy = [0:1:last.y]) navigate_cell(size, trace, padding, [ix, iy]) {
                 cell_size = [trace.x[ix], trace.y[iy]];
@@ -1288,7 +1288,7 @@ module segment(trace=[[1], [1]], padding=[0, 0, 0, 0], connector=[false, false, 
         translate([-size.x/2, 0]) rotate([0, 0, 90]) horizontal_screws(_WEST, padding, trace = trace.y, connector = connector);
         translate([size.x/2, 0]) rotate([0, 0, -90]) horizontal_screws(_EAST, padding, trace = trace.y, connector = connector);
 
-        if (lightweight) segment_core(trace, size, padding, connector, global_cell_index, global_cell_count);
+        if (hollow) segment_core(trace, size, padding, connector, global_cell_index, global_cell_count);
     }
 }
 
