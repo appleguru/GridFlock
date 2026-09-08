@@ -378,27 +378,25 @@ module each_cell_side(unit_size, enabled = [true, true, true, true]) {
 
 module cutter(size, below=0) {
     cutter_height = _profile_height_raw + below + 0.001;
-    union() {
-        translate([0, 0, _profile_height_raw - cutter_height]) {
-            if (cutter_height >= BASEPLATE_HEIGHT) {
-                baseplate_cutter(size, cutter_height);
-            } else if (cutter_height >= _total_height) {
-                // we can simply move down a little bit, the additional cutting will only cut air anyway.
+    translate([0, 0, _profile_height_raw - cutter_height]) {
+        if (cutter_height >= BASEPLATE_HEIGHT) {
+            baseplate_cutter(size, cutter_height);
+        } else if (cutter_height >= _total_height) {
+            // we can simply move down a little bit, the additional cutting will only cut air anyway.
+            translate([0, 0, cutter_height - BASEPLATE_HEIGHT]) baseplate_cutter(size, BASEPLATE_HEIGHT);
+        } else {
+            // we need to manually remove the dead space from the cut
+            intersection() {
                 translate([0, 0, cutter_height - BASEPLATE_HEIGHT]) baseplate_cutter(size, BASEPLATE_HEIGHT);
-            } else {
-                // we need to manually remove the dead space from the cut
-                intersection() {
-                    translate([0, 0, cutter_height - BASEPLATE_HEIGHT]) baseplate_cutter(size, BASEPLATE_HEIGHT);
-                    translate([-size.x/2, -size.y/2]) cube([size.x, size.y, cutter_height]);
-                }
+                translate([-size.x/2, -size.y/2]) cube([size.x, size.y, cutter_height]);
             }
         }
-        // Extend the waist straight down, removing the lip and the overhang between neighbouring cells
-        if (_remove_bottom_lip) {
-            floor = -below - 0.001;
-            translate([0, 0, floor]) linear_extrude(_profile_lip_height - floor) offset(_profile_waist_offset)
-                square([size.x - BASEPLATE_OUTER_DIAMETER, size.y - BASEPLATE_OUTER_DIAMETER], center=true);
-        }
+    }
+    // Extend the waist straight down, removing the lip and the overhang between neighbouring cells
+    if (_remove_bottom_lip) {
+        floor = -below - 0.001;
+        translate([0, 0, floor]) linear_extrude(_profile_lip_height - floor) offset(_profile_waist_offset)
+            square([size.x - BASEPLATE_OUTER_DIAMETER, size.y - BASEPLATE_OUTER_DIAMETER], center=true);
     }
 }
 
