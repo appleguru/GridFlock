@@ -156,7 +156,10 @@ adapter_west = false;
 // Style of the openGrid adapter. The plain openGrid connectors can be printed directly, in normal or 'lite' strength, and in a directional or non-directional variant. The 'vertical' variants of each cut a 45° angle to allow printing without supports, at the cost of reduced strength. The openConnect variants instead cut a slot for a separately printed openConnect connector, which is the recommended option
 adapter_mode = 11; // [0:openGrid, 1:openGrid/lite, 2:openGrid/directional, 3:openGrid/lite/directional, 4:openGrid/vertical, 5:openGrid/lite/vertical, 6:openGrid/directional/vertical, 7:openGrid/lite/directional/vertical, 10:openConnect Slot, 11:openConnect Slot w/ Lock]
 
-/* [Vertical Screws] */
+/* [Intersection Holes] */
+
+// Type of the holes at cell intersections. Screw holes go through the plate to screw it down. Magnet pockets are cut from the bottom, and hold the plate in place on a metal surface, e.g. a steel drawer
+vertical_screw_style = 0; // [0:Screw, 1:Magnet]
 
 // Radius of vertical screws
 vertical_screw_diameter = 3.2; // 0.1
@@ -164,6 +167,15 @@ vertical_screw_diameter = 3.2; // 0.1
 vertical_screw_countersink_top = [0, 0]; // 0.1
 // Top counterbore dimension. First value is the diameter of the screw head, second value the height
 vertical_screw_counterbore_top = [0, 0]; // 0.1
+
+// Diameter of the magnet pocket
+vertical_screw_magnet_diameter = 6.1; // 0.01
+// Height of the magnet pocket
+vertical_screw_magnet_height = 2.1; // 0.05
+// Floor below the magnet pocket. At 0, the pocket is open at the bottom and the magnets are glued or pressed in from below. With a thin floor, the magnets can be embedded using a print pause, or inserted from the top if the pocket height exceeds the plate height
+vertical_screw_magnet_floor = 0; // 0.05
+// Diameter of a small hole through the whole plate at the magnet pocket, used to push the magnet out with a needle. Set to 0 to disable
+vertical_screw_magnet_release_diameter = 1.5; // 0.1
 
 // Enable screws at *plate* corners
 vertical_screw_plate_corners = false;
@@ -301,6 +313,9 @@ _magnet_level_height = (magnet_style != _MAGNET_GLUE_TOP ? magnet_top : 0) + (ma
 _extra_height = (magnets ? _magnet_level_height : 0) + solid_base;
 
 _total_height = _profile_height + _extra_height;
+
+_VERTICAL_SCREW_STYLE_SCREW = 0;
+_VERTICAL_SCREW_STYLE_MAGNET = 1;
 
 // gap between segments in output
 _segment_gap = 10;
@@ -908,7 +923,15 @@ module screw(depth, d, countersink, counterbore, clear_up=0.01) {
 }
 
 module vertical_screw() {
-    translate([0, 0, _profile_height]) screw(depth=_total_height, d=vertical_screw_diameter, countersink=vertical_screw_countersink_top, counterbore=vertical_screw_counterbore_top);
+    if (vertical_screw_style == _VERTICAL_SCREW_STYLE_MAGNET) {
+        // if the pocket is higher than the plate, it cuts through the top, so that magnets can be inserted from there
+        bottom = vertical_screw_magnet_floor > 0 ? vertical_screw_magnet_floor : -0.01;
+        translate([0, 0, -_extra_height + bottom]) cylinder(d=vertical_screw_magnet_diameter, h=vertical_screw_magnet_floor + vertical_screw_magnet_height - bottom);
+        // release hole, to push the magnet out with a needle
+        if (vertical_screw_magnet_release_diameter > 0) translate([0, 0, -_extra_height - 0.01]) cylinder(d=vertical_screw_magnet_release_diameter, h=_total_height + 0.02);
+    } else {
+        translate([0, 0, _profile_height]) screw(depth=_total_height, d=vertical_screw_diameter, countersink=vertical_screw_countersink_top, counterbore=vertical_screw_counterbore_top);
+    }
 }
 
 module horizontal_screws(direction, padding, trace, connector) {
