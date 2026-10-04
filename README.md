@@ -75,9 +75,13 @@ For inserting magnets, check out [the jig](#jig).
     - [Adapter types](#adapter-types)
       - [Standard openGrid](#standard-opengrid)
       - [openConnect](#openconnect)
-  - [Vertical Screws](#vertical-screws)
+  - [Intersection Holes](#intersection-holes)
     - [Screw dimensions](#screw-dimensions)
-    - [Screw locations](#screw-locations)
+    - [Intersection magnets](#intersection-magnets)
+      - [Magnet dimensions](#magnet-dimensions)
+      - [Magnet floor](#magnet-floor)
+      - [Magnet release hole](#magnet-release-hole)
+    - [Hole locations](#hole-locations)
       - [Plate corners](#plate-corners)
       - [Plate edges](#plate-edges)
       - [Segment corners](#segment-corners)
@@ -467,26 +471,26 @@ If you wish to only create larger cells, not smaller cells, you can set the mini
 
 ## Lightweight
 
-`lightweight` skeletonizes the baseplate: instead of solid material between the cells, only a thin wall following the Gridfinity profile is printed. Neighbouring cells share a hollow channel, open towards the bed and closed at the top by a self-supporting 45° roof. Without magnets this roughly halves filament use and print time — a 4x4 plate drops from 20.6cm³ to 10.5cm³.
+`hollow` skeletonizes the baseplate: instead of solid material between the cells, only a thin wall following the Gridfinity profile is printed. Neighbouring cells share a hollow channel, open towards the bed and closed at the top by a self-supporting 45° roof. Without magnets this roughly halves filament use and print time — a 4x4 plate drops from 20.6cm³ to 10.5cm³.
 
-<!-- openscad -o docs/images/lightweight.png --camera=0,0,0,150,0,25,260 -D plate_size='[84, 84]' -D lightweight=true -D connector_intersection_puzzle=false -D numbering=false -->
+<!-- openscad -o docs/images/lightweight.png --camera=0,0,0,150,0,25,260 -D plate_size='[84, 84]' -D hollow=true -D connector_intersection_puzzle=false -D numbering=false -->
 <img src="docs/images/lightweight.png" alt="Lightweight baseplate, seen from below" />
 
-The same plate without `lightweight`, also seen from below:
+The same plate without `hollow`, also seen from below:
 
-<!-- openscad -o docs/images/lightweight-off.png --camera=0,0,0,150,0,25,260 -D plate_size='[84, 84]' -D lightweight=false -D connector_intersection_puzzle=false -D numbering=false -->
+<!-- openscad -o docs/images/lightweight-off.png --camera=0,0,0,150,0,25,260 -D plate_size='[84, 84]' -D hollow=false -D connector_intersection_puzzle=false -D numbering=false -->
 <img src="docs/images/lightweight-off.png" alt="Standard baseplate, seen from below" />
 
 The top surface, the outer wall of each segment and the puzzle connectors stay solid, so segments link up the same way and the plate looks unchanged from above.
 
 > [!NOTE]
-> Lightweight mode is incompatible with magnets, `solid_base` and the click latch — there is no material left to hold them, and GridFlock refuses to render that combination.
+> Hollow mode is incompatible with magnets, `solid_base` and the click latch — there is no material left to hold them, and GridFlock refuses to render that combination.
 
 ### Wall thickness
 
-`lightweight_wall` sets the wall thickness. It is a *horizontal* thickness, which is what the slicer sees on each layer, so setting it to your nozzle diameter prints the plate as a single wall with no infill. The default 0.8mm is one wall on a 0.8mm nozzle, two to three on a 0.4mm nozzle.
+`hollow_wall` sets the wall thickness. It is a *horizontal* thickness, which is what the slicer sees on each layer, so setting it to your nozzle diameter prints the plate as a single wall with no infill. The default 0.8mm is one wall on a 0.8mm nozzle, two to three on a 0.4mm nozzle.
 
-<!-- openscad -o docs/images/lightweight-wall.png --camera=0,0,0,150,0,25,260 -D plate_size='[84, 84]' -D lightweight=true -D lightweight_wall=1.6 -D connector_intersection_puzzle=false -D numbering=false -->
+<!-- openscad -o docs/images/lightweight-wall.png --camera=0,0,0,150,0,25,260 -D plate_size='[84, 84]' -D hollow=true -D hollow_wall=1.6 -D connector_intersection_puzzle=false -D numbering=false -->
 <img src="docs/images/lightweight-wall.png" alt="Lightweight baseplate with thicker walls" />
 
 ### Bottom lip
@@ -496,7 +500,7 @@ The Gridfinity profile ends in a 0.7mm lip that slopes back inwards. It is not f
 <!-- openscad -o docs/images/bottom-lip.png --camera=0,0,0,150,0,25,140 -D plate_size='[42, 42]' -D remove_bottom_lip=true -D connector_intersection_puzzle=false -D numbering=false -->
 <img src="docs/images/bottom-lip.png" alt="Baseplate with the bottom lip removed" />
 
-It can be used on its own, and is always enabled in lightweight mode, where the inward slope would taper the horizontally measured walls to nothing at the first layer.
+It can be used on its own, and is always enabled in hollow mode, where the inward slope would taper the horizontally measured walls to nothing at the first layer.
 
 ## Corner radius
 
@@ -665,9 +669,11 @@ Since the GridFlock side of the connector is recessed, this requires a thicker w
 
 There is also a "lock" variant that increases the connection strength to the openConnect interconnect. This connection is so strong that you may need a hammer to install the interconnect. This is my preferred option.
 
-## Vertical Screws
+## Intersection Holes
 
-Vertical screws are inserted at cell intersections. They can be used to screw down the plate. Screws can be placed at various positions depending on use case.
+<a name="vertical-screws"></a>
+
+Holes can be added at cell intersections. By default, these are vertical screw holes that can be used to screw down the plate. Alternatively, they can be [magnet pockets](#intersection-magnets) that hold the plate on a metal surface. The holes can be placed at various positions depending on use case, see [hole locations](#hole-locations).
 
 <!-- openscad -o docs/images/vscrews.png --camera=0,0,0,40,0,10,400 -D plate_size='[336, 210]' -D 'bed_size=[180, 250]' -D magnets=false -D vertical_screw_plate_corners=true -D vertical_screw_segment_corners=true -D vertical_screw_other=true -->
 <img src="docs/images/vscrews.png" alt="Vertical screws" />
@@ -694,9 +700,45 @@ If you combine the two options, the counterbore slot is placed above the counter
 <!-- openscad -o docs/images/vscrews-counterboth.png --camera=0,0,0,30,0,10,200 -D plate_size='[105, 63]' -D magnets=false -D vertical_screw_other=true -D vertical_screw_segment_corners=true -D vertical_screw_plate_corners=true -D solid_base=5 -D vertical_screw_counterbore_top='[6, 4]' -D vertical_screw_countersink_top='[6, 2.5]' -->
 <img src="docs/images/vscrews-counterboth.png" alt="Vertical screw counterbore + countersunk" />
 
-### Screw locations
+### Intersection magnets
 
-During the generation process, each intersection is classified into one of five categories. Each of these categories can have screws enabled separately.
+Setting `vertical_screw_style` to `Magnet` replaces the screw holes with magnet pockets on the bottom of the plate. These magnets hold the plate itself in place on a metal surface, such as a steel drawer. They are independent of the [bin magnets](#magnets) described above.
+
+<!-- openscad -o docs/images/vmagnets.png --camera=0,0,0,140,0,10,230 -D plate_size='[168, 84]' -D magnets=false -D vertical_screw_style=1 -D vertical_screw_plate_corners=true -D vertical_screw_other=true -->
+<img src="docs/images/vmagnets.png" alt="Intersection magnets" />
+
+By default, the pockets are open at the bottom. The magnets can be glued in, or press-fit by tuning `vertical_screw_magnet_diameter`. Even loose magnets will keep the plate from sliding around, but they won't hold the plate in place when it's lifted. See [magnet floor](#magnet-floor) for alternatives.
+
+The magnets use the same [locations](#hole-locations) as screws. Note that intersections on the plate edge often have no room for a magnet, and intersections on segment edges interfere with the intersection puzzle connector.
+
+#### Magnet dimensions
+
+The pocket size is configured with `vertical_screw_magnet_diameter` and `vertical_screw_magnet_height`. The defaults fit standard 6x2mm magnets.
+
+#### Magnet floor
+
+`vertical_screw_magnet_floor` adds a floor below the pocket, which keeps the magnets in the plate without glue. A value of 0.25mm or one or two layers is enough. A floor reduces the magnet strength a bit, because the magnet is further away from the metal surface.
+
+With a floor, the pocket is fully enclosed, so you have to pause the print at the top of the pocket to insert the magnets. Alternatively, you can set `vertical_screw_magnet_height` to a value larger than the plate height (e.g. 10). The pocket then extends all the way through the plate, and the magnets can be pushed in from the top after printing:
+
+<!-- openscad -o docs/images/vmagnets-open-top.png --camera=21,0,0,40,0,10,100 -D plate_size='[126, 84]' -D magnets=false -D vertical_screw_style=1 -D vertical_screw_plate_corners=true -D vertical_screw_magnet_floor=0.25 -D vertical_screw_magnet_height=10 -->
+<img src="docs/images/vmagnets-open-top.png" alt="Intersection magnets inserted from the top" />
+
+> [!NOTE]
+> The hole cuts into the corners of the gridfinity profile a bit. This should not matter for most bins.
+
+#### Magnet release hole
+
+A small hole goes through the whole plate at each magnet pocket. It lets you push the magnet out with a needle: through the top for pockets that are open at the bottom, or through the floor for pockets that are open at the top. The diameter is configured with `vertical_screw_magnet_release_diameter`, and setting it to 0 disables the hole.
+
+<!-- openscad -o docs/images/vmagnets-release.png --camera=21,0,0,140,0,10,60 -D plate_size='[126, 84]' -D magnets=false -D vertical_screw_style=1 -D vertical_screw_plate_corners=true -->
+<img src="docs/images/vmagnets-release.png" alt="Magnet release hole" />
+
+### Hole locations
+
+<a name="screw-locations"></a>
+
+During the generation process, each intersection is classified into one of five categories. Each of these categories can have holes enabled separately.
 
 #### Plate corners
 
