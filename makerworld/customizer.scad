@@ -45,9 +45,9 @@ Edge_Position = 0; // [0:Centered, 1:One side]
 /* [Lightweight] */
 
 // Horizontal wall thickness, mm
-@include lightweight_wall
+@include hollow_wall
 // Anchor around connectors
-Lightweight_Connector_Fill = 2; // 0.5
+Hollow_Connector_Fill = 2; // 0.5
 // Drop the 0.7mm lip, no overhang
 @include remove_bottom_lip
 
@@ -63,6 +63,16 @@ Lightweight_Connector_Fill = 2; // 0.5
 // Frame strength around the magnet
 @include magnet_border
 @include magnet_release_width
+// Mount on metal. Where: Screws tab
+@include vertical_screw_style
+// Pocket diameter, mm
+@include vertical_screw_magnet_diameter
+// Pocket height, mm
+@include vertical_screw_magnet_height
+// 0 leaves the pocket open below
+@include vertical_screw_magnet_floor
+// Push-out hole. 0 for none
+@include vertical_screw_magnet_release_diameter
 
 /* [Numbering] */
 
@@ -206,7 +216,7 @@ Stacked_Separator_Color = "#00A0A0"; // color
 // Replaced by Connector_Style above.
 @drop connector_intersection_puzzle connector_edge_puzzle
 // Replaced by Lightweight and Click_Latch above.
-@drop lightweight
+@drop hollow
 @drop click
 // Replaced by Edge_Style and Edge_Position above.
 @drop filler_x filler_y filler_fraction filler_minimum_size alignment

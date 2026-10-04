@@ -9,7 +9,7 @@ freely. Only removing or renaming a symbol listed in UPSTREAM breaks the build, 
 The build makes these transformations, in order:
 
   1. Connector fill: upstream's segment_core is renamed _gf_segment_core, and overrides.scad defines a
-     segment_core wrapping it that keeps Lightweight_Connector_Fill mm of solid material around every
+     segment_core wrapping it that keeps Hollow_Connector_Fill mm of solid material around every
      connector, so a lightweight plate does not grow them out of a single wall with air behind it.
   2. Multi-plate: mw_main(mw_plate) is generated from main(): every statement of main() is copied except its
      segment-placement loop. The preview and stacked prints reuse that loop as is; otherwise the segments are
@@ -18,7 +18,7 @@ The build makes these transformations, in order:
   4. Parameter block: gridflock's parameters are replaced by customizer.scad, which
      - re-orders them: the always-visible options first, then one tab per section;
      - adds simplified options: Width, Depth, Clearance, Build_Plate, Build_Plate_Custom, Plate_Margin,
-       Lightweight, Click_Latch, Edge_Style, Edge_Position, Connector_Style, Lightweight_Connector_Fill and
+       Lightweight, Click_Latch, Edge_Style, Edge_Position, Connector_Style, Hollow_Connector_Fill and
        Stacked_Separator;
      - changes defaults: Lightweight on (gridflock: off), Click_Style Arc (gridflock: ClickGroove);
      - shortens the descriptions to fit PMM, and capitalizes every label, aliased back to gridflock's name;
@@ -70,7 +70,7 @@ UPSTREAM = {
 # Renamed so overrides.scad can wrap them under their own name.
 WRAPPED = {"segment_core": "_gf_segment_core"}
 # makerworld's own options that overrides.scad reads; `docs` needs their customizer.scad defaults.
-OVERRIDE_OPTIONS = ["Lightweight_Connector_Fill"]
+OVERRIDE_OPTIONS = ["Hollow_Connector_Fill"]
 
 INCLUDE_RE = re.compile(r"^\s*(include|use)\s*<([^>]+)>\s*;?\s*$")
 SECTION_RE = re.compile(r"^\s*/\*\s*\[(.+?)\]\s*\*/\s*$")
@@ -155,9 +155,10 @@ TEST_ENTRIES = ["mw_assembly_view", "mw_plate_1"]
 # gridflock parameter sets under which mw_assembly_view must match gridflock's own main().
 UPSTREAM_CHECKS = [
     {},
-    {"lightweight": "true", "connector_edge_puzzle": "true", "connector_intersection_puzzle": "false"},
+    {"hollow": "true", "connector_edge_puzzle": "true", "connector_intersection_puzzle": "false"},
     {"stacked_print": "true", "stacked_print_duplicates": "2"},
     {"magnets": "true", "plate_size": "[200, 150]", "bed_size": "[120, 120]"},
+    {"vertical_screw_style": "1", "vertical_screw_plate_corners": "true", "vertical_screw_other": "true"},
 ]
 
 
@@ -668,7 +669,7 @@ def check_against_upstream(model):
     params = split_params(read(ROOT / "gridflock.scad"))[1]
     spec = layout(params)
     defaults = {n: DECL_RE.match(params[n][-1]).group(3) for n in sorted(spec.dropped | spec.overridden)}
-    neutral = {"Lightweight_Connector_Fill": "0", "_mw_turned": "false"}
+    neutral = {"Hollow_Connector_Fill": "0", "_mw_turned": "false"}
     probe = model.with_name("upstream-check.scad")
     probe.write_text(model.read_text() + "mw_assembly_view();\n")
     with tempfile.TemporaryDirectory() as tmp:

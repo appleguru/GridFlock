@@ -53,7 +53,7 @@ connector_edge_puzzle = Connector_Style == 2;
 
 click = Click_Latch;
 // A skeletonized plate has no material left to hold any of these, so they win over Lightweight.
-lightweight = Lightweight && !Click_Latch && !magnets && solid_base == 0;
+hollow = Lightweight && !Click_Latch && !magnets && solid_base == 0;
 
 // An open edge is one dynamic filler cell of exactly the leftover width; the others leave no leftover.
 filler_x = Edge_Style == 1 ? 2 : 0;
