@@ -5,9 +5,12 @@ Packages GridFlock for [MakerWorld's Parametric Model Maker](https://makerworld.
 ## Building
 
 ```sh
-just makerworld        # -> build/makerworld/GridFlock.scad
-just test-makerworld   # build it and check that it renders
+uv run makerworld/build.py        # -> build/makerworld/GridFlock.scad
+uv run makerworld/build.py test   # build it, check that it renders and matches gridflock; takes -D Var=value
+uv run makerworld/build.py docs   # render the listing images into makerworld/images
 ```
+
+Run from the repository root. `just paths` runs first when `paths/` is missing.
 
 Upload `build/makerworld/GridFlock.scad` to the Parametric Model Maker.
 
@@ -48,7 +51,17 @@ Worth knowing when editing it:
 - Labels are capitalized (`magnet_diameter` becomes `Magnet_Diameter`) because the customizer shows the variable name.
 - Descriptions share a line with the label, wrap at roughly 30 characters, and lose any `/`.
 - PMM cannot show a parameter conditionally, which is why the custom bed size has its own tab.
-- `build.py` patches `main()` to render one plate at a time and strips the `test_pattern` dispatch PMM must not see. The patches are anchored on exact lines of `gridflock.scad` and fail loudly if upstream moves them.
+- Every `@include` and `@drop` must name a real gridflock parameter, and `epilogue.scad` may only assign dropped ones, so an upstream rename fails the build.
+
+## Changes to gridflock
+
+Nothing outside `makerworld/` differs from upstream, so merging upstream never conflicts. `build.py` makes every change at build time and lists them all at its top. It parses `gridflock.scad` and finds what it changes by name, never by matching text, so upstream can reformat or add code freely:
+
+- **Connector fill** - gridflock's `segment_core` becomes `_gf_segment_core`, wrapped by the `segment_core` in [`overrides.scad`](overrides.scad), which keeps `Lightweight_Connector_Fill` (2mm) of solid material around every connector. The listing images are rendered with it too.
+- **Plates** - `mw_main()` is generated from `main()`: all of it but the segment loop, then the packing around that loop's own `segment()` call. `main()` stays as it is.
+- **Test patterns** - top-level geometry, the `test_pattern` dispatch PMM must not see, is dropped.
+- Every upstream name this relies on is listed in `UPSTREAM` and checked first; a missing one fails the build by name.
+- `test` also renders the preview with the connector fill off and makerworld's options set to gridflock's defaults, and requires it to match `gridflock.scad`'s own output facet for facet.
 
 ## Plates
 

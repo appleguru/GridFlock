@@ -1,7 +1,6 @@
 // Parameter layout for MakerWorld, built by makerworld/build.py into the generated model's parameter block.
 // Lines starting with `@` are directives; every gridflock.scad parameter must appear in exactly one:
 //   @include <name>...        copy the parameter's declaration verbatim from gridflock.scad
-//   @include? <name>...       same, but skip a parameter gridflock.scad does not declare
 //   @include <name> = <value> copy the declaration but change its default
 //   @drop <name>...           this gridflock parameter is deliberately not exposed
 // A comment directly above a single-parameter @include replaces gridflock's own description.
@@ -46,11 +45,11 @@ Edge_Position = 0; // [0:Centered, 1:One side]
 /* [Lightweight] */
 
 // Horizontal wall thickness, mm
-@include? lightweight_wall
+@include lightweight_wall
 // Anchor around connectors
-@include? lightweight_connector_fill
+Lightweight_Connector_Fill = 2; // 0.5
 // Drop the 0.7mm lip, no overhang
-@include? remove_bottom_lip
+@include remove_bottom_lip
 
 /* [Magnets] */
 
@@ -207,7 +206,7 @@ Stacked_Separator_Color = "#00A0A0"; // color
 // Replaced by Connector_Style above.
 @drop connector_intersection_puzzle connector_edge_puzzle
 // Replaced by Lightweight and Click_Latch above.
-@drop? lightweight
+@drop lightweight
 @drop click
 // Replaced by Edge_Style and Edge_Position above.
 @drop filler_x filler_y filler_fraction filler_minimum_size alignment
