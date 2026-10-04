@@ -2,6 +2,7 @@
 // Lines starting with `@` are directives; every gridflock.scad parameter must appear in exactly one:
 //   @include <name>...        copy the parameter's declaration verbatim from gridflock.scad
 //   @include <name> = <value> copy the declaration but change its default
+//   @include <name> as <Label> expose it under a fixed label, so an upstream rename keeps the published one
 //   @drop <name>...           this gridflock parameter is deliberately not exposed
 // A comment directly above a single-parameter @include replaces gridflock's own description.
 // Descriptions share one line with the label in the MakerWorld UI, so keep them short; `/` is stripped.
@@ -45,9 +46,9 @@ Edge_Position = 0; // [0:Centered, 1:One side]
 /* [Lightweight] */
 
 // Horizontal wall thickness, mm
-@include hollow_wall
+@include hollow_wall as Lightweight_Wall
 // Anchor around connectors
-Hollow_Connector_Fill = 2; // 0.5
+Lightweight_Connector_Fill = 2; // 0.5
 // Drop the 0.7mm lip, no overhang
 @include remove_bottom_lip
 

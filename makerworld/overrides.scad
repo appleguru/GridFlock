@@ -6,9 +6,9 @@
 module segment_core(trace, size, padding, connector, global_cell_index, global_cell_count) {
     difference() {
         _gf_segment_core(trace, size, padding, connector, global_cell_index, global_cell_count);
-        if (Hollow_Connector_Fill > 0)
+        if (Lightweight_Connector_Fill > 0)
             translate([0, 0, -_extra_height]) linear_extrude(height = _total_height)
-                offset(Hollow_Connector_Fill) {
+                offset(Lightweight_Connector_Fill) {
                     if (connector_intersection_puzzle) {
                         segment_intersection_connectors(true, trace, size, padding, connector);
                         segment_intersection_connectors(false, trace, size, padding, connector);

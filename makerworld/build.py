@@ -9,7 +9,7 @@ freely. Only removing or renaming a symbol listed in UPSTREAM breaks the build, 
 The build makes these transformations, in order:
 
   1. Connector fill: upstream's segment_core is renamed _gf_segment_core, and overrides.scad defines a
-     segment_core wrapping it that keeps Hollow_Connector_Fill mm of solid material around every
+     segment_core wrapping it that keeps Lightweight_Connector_Fill mm of solid material around every
      connector, so a lightweight plate does not grow them out of a single wall with air behind it.
   2. Multi-plate: mw_main(mw_plate) is generated from main(): every statement of main() is copied except its
      segment-placement loop. The preview and stacked prints reuse that loop as is; otherwise the segments are
@@ -18,7 +18,7 @@ The build makes these transformations, in order:
   4. Parameter block: gridflock's parameters are replaced by customizer.scad, which
      - re-orders them: the always-visible options first, then one tab per section;
      - adds simplified options: Width, Depth, Clearance, Build_Plate, Build_Plate_Custom, Plate_Margin,
-       Lightweight, Click_Latch, Edge_Style, Edge_Position, Connector_Style, Hollow_Connector_Fill and
+       Lightweight, Click_Latch, Edge_Style, Edge_Position, Connector_Style, Lightweight_Connector_Fill and
        Stacked_Separator;
      - changes defaults: Lightweight on (gridflock: off), Click_Style Arc (gridflock: ClickGroove);
      - shortens the descriptions to fit PMM, and capitalizes every label, aliased back to gridflock's name;
@@ -70,7 +70,7 @@ UPSTREAM = {
 # Renamed so overrides.scad can wrap them under their own name.
 WRAPPED = {"segment_core": "_gf_segment_core"}
 # makerworld's own options that overrides.scad reads; `docs` needs their customizer.scad defaults.
-OVERRIDE_OPTIONS = ["Hollow_Connector_Fill"]
+OVERRIDE_OPTIONS = ["Lightweight_Connector_Fill"]
 
 INCLUDE_RE = re.compile(r"^\s*(include|use)\s*<([^>]+)>\s*;?\s*$")
 SECTION_RE = re.compile(r"^\s*/\*\s*\[(.+?)\]\s*\*/\s*$")
@@ -483,10 +483,10 @@ def label(name):
     return "_".join(word.capitalize() for word in name.split("_"))
 
 
-def declare(name, line, value):
+def declare(name, line, value, alias=None):
     """Re-emit a gridflock declaration under its label, optionally with a different default."""
     m = DECL_RE.match(line)
-    return f"{label(name)}{m.group(2)}{m.group(3) if value is None else value}{m.group(4)}{m.group(5) or ''}".rstrip()
+    return f"{alias or label(name)}{m.group(2)}{m.group(3) if value is None else value}{m.group(4)}{m.group(5) or ''}".rstrip()
 
 
 class Layout(NamedTuple):
@@ -511,7 +511,10 @@ def expand(spec_lines, params):
             continue
         kind, rest = m.group(1), m.group(2)
         names, _, value = (v.strip() for v in rest.partition("="))
-        names, value = names.split(), value or None
+        names, value, alias = names.split(), value or None, None
+        # `as <Label>` keeps a published label when upstream renames the parameter behind it.
+        if len(names) == 3 and names[1] == "as":
+            names, alias = names[:1], names[2]
         if value is not None and len(names) != 1:
             errors.append(f"customizer.scad: a default may only be overridden for a single parameter: {rest!r}")
         # A comment directly above a single-parameter @include replaces gridflock's own description.
@@ -528,8 +531,8 @@ def expand(spec_lines, params):
             used.add(name)
             if kind == "include":
                 out.extend(params[name][:-1] if description is None else description)
-                out.append(declare(name, params[name][-1], value))
-                aliases.append(f"{name} = {label(name)};")
+                out.append(declare(name, params[name][-1], value, alias))
+                aliases.append(f"{name} = {alias or label(name)};")
                 if value is not None:
                     overridden.add(name)
             else:
@@ -669,7 +672,7 @@ def check_against_upstream(model):
     params = split_params(read(ROOT / "gridflock.scad"))[1]
     spec = layout(params)
     defaults = {n: DECL_RE.match(params[n][-1]).group(3) for n in sorted(spec.dropped | spec.overridden)}
-    neutral = {"Hollow_Connector_Fill": "0", "_mw_turned": "false"}
+    neutral = {"Lightweight_Connector_Fill": "0", "_mw_turned": "false"}
     probe = model.with_name("upstream-check.scad")
     probe.write_text(model.read_text() + "mw_assembly_view();\n")
     with tempfile.TemporaryDirectory() as tmp:

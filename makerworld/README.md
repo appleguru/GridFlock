@@ -35,6 +35,7 @@ Four options replace gridflock's own; everything else is exposed as declared. [`
 | `Connector_Style` | `connector_intersection_puzzle`, `connector_edge_puzzle` |
 | `Edge_Style`, `Edge_Position` | `filler_x`/`filler_y`, `filler_fraction`, `filler_minimum_size`, `alignment` |
 | `Click_Latch`, `Lightweight` | `click`, `hollow` |
+| `Lightweight_Wall` | `hollow_wall`, renamed upstream; `@include ... as` keeps the published label |
 
 ## How the layout is defined
 
@@ -58,7 +59,7 @@ Worth knowing when editing it:
 
 Nothing outside `makerworld/` differs from upstream, so merging upstream never conflicts. `build.py` makes every change at build time and lists them all at its top. It parses `gridflock.scad` and finds what it changes by name, never by matching text, so upstream can reformat or add code freely:
 
-- **Connector fill** - gridflock's `segment_core` becomes `_gf_segment_core`, wrapped by the `segment_core` in [`overrides.scad`](overrides.scad), which keeps `Hollow_Connector_Fill` (2mm) of solid material around every connector. The listing images are rendered with it too.
+- **Connector fill** - gridflock's `segment_core` becomes `_gf_segment_core`, wrapped by the `segment_core` in [`overrides.scad`](overrides.scad), which keeps `Lightweight_Connector_Fill` (2mm) of solid material around every connector. The listing images are rendered with it too.
 - **Plates** - `mw_main()` is generated from `main()`: all of it but the segment loop, then the packing around that loop's own `segment()` call. `main()` stays as it is.
 - **Test patterns** - top-level geometry, the `test_pattern` dispatch PMM must not see, is dropped.
 - Every upstream name this relies on is listed in `UPSTREAM` and checked first; a missing one fails the build by name.
